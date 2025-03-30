@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VPC Creation Form</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+        .header-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        form {
+            width: 400px;
+            margin: 40px auto 0;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #0073ec;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #004e9f;
+        }
+        .image-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+        .image-container img {
+            max-width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="image-container">
+        <img src="{% static 'images/alkira_logo.png' %}" alt="Alkira Logo">
+    </div>
+    <div class="header-container">
+        <h1>VPC Creation Form</h1>
+    </div>
+    <form method="post" action="{% url 'process_api_form' %}">
+        {% csrf_token %}
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username" autocomplete="off"><br><br>
+
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" autocomplete="off"><br><br>
+
+        <label for="vpc_name">VPC Name:</label><br>
+        <input type="text" id="vpc_name" name="vpc_name"><br><br>
+
+        <label for="vpc_cidr">VPC CIDR:</label><br>
+        <input type="text" id="vpc_cidr" name="vpc_cidr"><br><br>
+
+        <label for="subnet_cidrs">Subnet CIDRs (comma-separated):</label><br>
+        <input type="text" id="subnet_cidrs" name="subnet_cidrs"><br><br>
+
+        <label for="availability_zones">Availability Zones (comma-separated):</label><br>
+        <input type="text" id="availability_zones" name="availability_zones"><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
