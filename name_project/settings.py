@@ -10,7 +10,7 @@ SECRET_KEY = 'django-insecure-fl3s0%l%mk^s8pzuqtf_w@rb*!)+rwz^cb5dk8=q-+el2!vh!u
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['aws_vpc_generator.onrender.com']
+ALLOWED_HOSTS = ['aws-vpc-generator.onrender.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
