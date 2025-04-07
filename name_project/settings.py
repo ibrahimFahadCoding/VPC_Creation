@@ -10,7 +10,7 @@ SECRET_KEY = 'django-insecure-fl3s0%l%mk^s8pzuqtf_w@rb*!)+rwz^cb5dk8=q-+el2!vh!u
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['.appspot.com', 'your-project-id.appspot.com']
+ALLOWED_HOSTS = ['vpccreator.com', 'www.vpccreator.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
