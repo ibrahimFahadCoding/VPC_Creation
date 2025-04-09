@@ -7,5 +7,5 @@ urlpatterns = [
     path('api/delete_vpc/<str:vpc_id>/', views.delete_vpc, name='delete_vpc_api'),
     path('api_test_form/', views.api_test_form, name='api_test_form'),
     path('process_api_form/', views.process_api_form, name='process_api_form'),
-    path('create_user/', views.create_user_page, name='create_user_page'),
+    path('', views.create_user_page, name='create_user_page'),
 ]

@@ -1,6 +1,7 @@
 """
 Django settings for name_project project.
 """
+import os
 
 from pathlib import Path
 
@@ -8,9 +9,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-fl3s0%l%mk^s8pzuqtf_w@rb*!)+rwz^cb5dk8=q-+el2!vh!u'
 
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['https://vpccreator.netlify.app']
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -87,6 +88,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'name_app/static'),
+]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
