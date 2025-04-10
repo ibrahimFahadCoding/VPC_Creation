@@ -1,0 +1,60 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 40px;
+        }
+        .btn-container {
+            margin-top: 30px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 25px;
+            margin: 10px;
+            font-size: 16px;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Alkira Logo -->
+    <a href="{% url 'front_page' %}">
+        <img src="{% static 'name_app/images/alkira_logo.png' %}" alt="Alkira Logo" class="logo" width="200">
+    </a>
+
+    <h1>VPC Creation Home</h1>
+
+    <div class="btn-container">
+        <a href="{% url 'create_user_page' %}" class="btn">Create User</a>
+        <a href="{% url 'api_test_form' %}" class="btn">Create VPC</a>
+        <a href="{% url 'api_test_result' %}" class="btn">View VPCs</a>
+    </div>
+
+</body>
+</html>

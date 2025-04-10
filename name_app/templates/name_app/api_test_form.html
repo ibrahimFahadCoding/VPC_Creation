@@ -51,35 +51,50 @@
             max-width: 200px;
             height: auto;
         }
+        .error-bar {
+            background-color: #f44336;
+            color: white;
+            padding: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="image-container">
-        <img src="{% static 'name_app/images/alkira_logo.png' %}" alt="Alkira Logo">
-
+        <a href="{% url 'front_page' %}">
+            <img src="{% static 'name_app/images/alkira_logo.png' %}" alt="Alkira Logo">
+        </a>
     </div>
     <div class="header-container">
         <h1>VPC Creation Form</h1>
     </div>
+
+    <!-- Display Error Message if Exists -->
+    {% if error_message %}
+    <div class="error-bar">{{ error_message }}</div>
+    {% endif %}
+
     <form method="post" action="{% url 'process_api_form' %}">
         {% csrf_token %}
         <label for="username">Username:</label><br>
-        <input type="text" id="username" name="username" autocomplete="off"><br><br>
+        <input type="text" id="username" name="username" autocomplete="off" placeholder="Enter Username"><br><br>
 
         <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" autocomplete="off"><br><br>
+        <input type="password" id="password" name="password" autocomplete="off" placeholder="Enter Password"><br><br>
 
         <label for="vpc_name">VPC Name:</label><br>
-        <input type="text" id="vpc_name" name="vpc_name"><br><br>
+        <input type="text" id="vpc_name" name="vpc_name" placeholder="Enter VPC Name"><br><br>
 
         <label for="vpc_cidr">VPC CIDR:</label><br>
-        <input type="text" id="vpc_cidr" name="vpc_cidr"><br><br>
+        <input type="text" id="vpc_cidr" name="vpc_cidr" placeholder="Enter VPC CIDR (e.g 10.0.0.0/16)"><br><br>
 
         <label for="subnet_cidrs">Subnet CIDRs (comma-separated):</label><br>
-        <input type="text" id="subnet_cidrs" name="subnet_cidrs"><br><br>
+        <input type="text" id="subnet_cidrs" name="subnet_cidrs" placeholder="Enter Subnet CIDRs (e.g 10.0.1.0/24,10.0.2.0/24)"><br><br>
 
         <label for="availability_zones">Availability Zones (comma-separated):</label><br>
-        <input type="text" id="availability_zones" name="availability_zones"><br><br>
+        <input type="text" id="availability_zones" name="availability_zones" placeholder="Enter Availability Zones (e.g us-west-1a,us-west-1b)"><br><br>
 
         <button type="submit">Submit</button>
     </form>

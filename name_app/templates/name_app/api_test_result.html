@@ -22,6 +22,17 @@
         .image-container img {
             max-width: 200px;
             height: auto;
+            cursor: pointer;
+        }
+        .error-bar {
+            background-color: #f44336;
+            color: white;
+            padding: 10px;
+            width: 90%;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-radius: 5px;
         }
         .result-container {
             text-align: center;
@@ -30,7 +41,7 @@
         }
         table {
             border-collapse: collapse;
-            width: 90%;
+            width: 100%;
             margin: 20px auto;
             font-size: 16px;
         }
@@ -53,37 +64,46 @@
     </style>
 </head>
 <body>
+    <!-- Logo button to go to the front page -->
     <div class="image-container">
-        <img src="{% static 'name_app/images/alkira_logo.png' %}" alt="Alkira Logo">
+        <a href="{% url 'front_page' %}">
+            <img src="{% static 'name_app/images/alkira_logo.png' %}" alt="Alkira Logo">
+        </a>
+    </div>
 
-    </div>
-    <div class="result-container">
-        <h1>VPC Creation Result</h1>
-        <p>Created VPC: {{ vpc_name }} (ID: {{ vpc_id }})</p>
-        <h2>All VPCs:</h2>
-        <table id="vpcTable">
-            <thead>
-                <tr>
-                    <th>VPC ID</th>
-                    <th>VPC Name</th>
-                    <th>User</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for vpc in all_vpcs %}
-                <tr id="vpcRow-{{ vpc.vpc_id }}">
-                    <td>{{ vpc.vpc_id }}</td>
-                    <td>{{ vpc.vpc_name }}</td>
-                    <td>{{ vpc.user.username }}</td>
-                    <td>
-                        <button class="delete-button" data-vpc-id="{{ vpc.vpc_id }}">Delete</button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    {% if error %}
+        <div class="error-bar">
+            {{ error }}
+        </div>
+    {% else %}
+        <div class="result-container">
+            <h1>View VPCs</h1>
+            <h2>Configured VPCs:</h2>
+            <table id="vpcTable">
+                <thead>
+                    <tr>
+                        <th>VPC ID</th>
+                        <th>VPC Name</th>
+                        <th>User</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vpc in all_vpcs %}
+                    <tr id="vpcRow-{{ vpc.vpc_id }}">
+                        <td>{{ vpc.vpc_id }}</td>
+                        <td>{{ vpc.vpc_name }}</td>
+                        <td>{{ vpc.user.username }}</td>
+                        <td>
+                            <button class="delete-button" data-vpc-id="{{ vpc.vpc_id }}">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
