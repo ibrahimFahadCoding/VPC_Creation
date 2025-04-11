@@ -156,6 +156,7 @@ def delete_vpc(request, vpc_id):
     if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
         vpc = get_object_or_404(VPC, vpc_id=vpc_id)
         try:
+            # First, check if the VPC exists in AWS
             try:
                 ec2.describe_vpcs(VpcIds=[vpc_id])
             except ClientError as e:
@@ -164,6 +165,7 @@ def delete_vpc(request, vpc_id):
                     return JsonResponse({'status': 'success', 'message': 'VPC not found in AWS. Removed from database.'})
                 raise
 
+            # Helper function to safely delete resources like subnets, IGWs, etc.
             def safe_delete(fn, id_label, items):
                 for item in items:
                     try:
@@ -171,6 +173,7 @@ def delete_vpc(request, vpc_id):
                     except ClientError as e:
                         print(f"Error deleting {id_label} {item}: {e}")
 
+            # Delete instances in the VPC (if any)
             instances = [
                 inst['InstanceId'] for r in ec2.describe_instances(
                     Filters=[{'Name': 'vpc-id', 'Values': [vpc_id]}]
@@ -183,12 +186,23 @@ def delete_vpc(request, vpc_id):
                     WaiterConfig={'Delay': 10, 'MaxAttempts': 12}
                 )
 
-            safe_delete(ec2.delete_subnet, 'SubnetId', [
+            # Delete subnets in the VPC
+            subnets = [
                 s['SubnetId'] for s in ec2.describe_subnets(
                     Filters=[{'Name': 'vpc-id', 'Values': [vpc_id]}]
                 )['Subnets']
-            ])
+            ]
+            safe_delete(ec2.delete_subnet, 'SubnetId', subnets)
 
+            # Delete Route Tables associated with the VPC
+            route_tables = [
+                rt['RouteTableId'] for rt in ec2.describe_route_tables(
+                    Filters=[{'Name': 'vpc-id', 'Values': [vpc_id]}]
+                )['RouteTables']
+            ]
+            safe_delete(ec2.delete_route_table, 'RouteTableId', route_tables)
+
+            # Detach and delete any Internet Gateways attached to the VPC
             for igw in ec2.describe_internet_gateways(
                 Filters=[{'Name': 'attachment.vpc-id', 'Values': [vpc_id]}]
             )['InternetGateways']:
@@ -198,24 +212,28 @@ def delete_vpc(request, vpc_id):
                 except ClientError as e:
                     print(f"Error deleting IGW: {e}")
 
+            # Delete security groups (except default)
             for sg in ec2.describe_security_groups(
                 Filters=[{'Name': 'vpc-id', 'Values': [vpc_id]}]
             )['SecurityGroups']:
                 if sg['GroupName'] != 'default':
                     safe_delete(ec2.delete_security_group, 'GroupId', [sg['GroupId']])
 
+            # Finally, attempt to delete the VPC
             for attempt in range(5):
                 try:
                     ec2.delete_vpc(VpcId=vpc_id)
                     break
                 except ClientError as e:
                     if e.response['Error']['Code'] == 'DependencyViolation':
+                        # Wait and retry if the VPC has dependencies (recursive deletion logic)
                         time.sleep(2 ** attempt)
                         continue
                     raise
             else:
                 return JsonResponse({'status': 'error', 'message': 'Failed to delete VPC after retries.'})
 
+            # Delete the VPC from the database
             vpc.delete()
             return JsonResponse({'status': 'success', 'message': 'VPC deleted successfully.'})
 
@@ -223,6 +241,7 @@ def delete_vpc(request, vpc_id):
             return JsonResponse({'status': 'error', 'message': str(e)})
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method or not AJAX'})
+
 
 
 def front_page(request):
